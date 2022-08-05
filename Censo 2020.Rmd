@@ -6,28 +6,43 @@ output: html_document
 ---
 
 ```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE, fig.align = "center")
+
+library(tidyverse)
+# para imprimir tablas con formato más bonito
+library(kableExtra)
+# una paleta de colores exótica
+library(wesanderson)
+```
+
+## Análisis del Censo 2020
+
+```{r}
+ruta <- "iter_27_cpv2020/conjunto_de_datos/conjunto_de_datos_iter_27CSV20.csv"
+ruta2 <- "iter_27_cpv2020/diccionario_datos/diccionario_datos_iter_27CSV20.csv"
+
+# read_csv() es la versión del tidyverse de read.csv
+censo <- read_csv(ruta) %>% 
+  janitor::clean_names() %>% 
+  filter(nom_mun == "Centro")
+  
+# limpieza
+dict_censo <- read_csv(ruta2, skip = 4) %>%
+  janitor::clean_names()
+
+# dejamos únicamente las 2 variables que nos interesan
+catalogo_variables <- dict_censo %>% 
+  select(mnemonico, indicador) %>% 
+  mutate(mnemonico = str_to_lower(mnemonico))
+
+```
+
+Pruebas
+
+```{r}
 
 
 
 
 ```
 
-## R Markdown
-
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
-summary(cars)
-```
-
-## Including Plots
-
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
