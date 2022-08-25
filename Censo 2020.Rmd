@@ -41,7 +41,7 @@ Pruebas
 
 ```{r}
 
-
+sesentaymas <- censo %>% select(p_60ymas)
 
 
 ```
