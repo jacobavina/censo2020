@@ -9,10 +9,13 @@ output: html_document
 knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE, fig.align = "center")
 
 library(tidyverse)
-# para imprimir tablas con formato más bonito
-library(kableExtra)
-# una paleta de colores exótica
-library(wesanderson)
+library(rgdal)
+library(broom)
+library(ggplot2)
+
+# library(remotes)
+# install_github("r-spatial/sf")
+
 ```
 
 ## Análisis del Censo 2020
@@ -20,6 +23,7 @@ library(wesanderson)
 ```{r}
 ruta <- "iter_27_cpv2020/conjunto_de_datos/conjunto_de_datos_iter_27CSV20.csv"
 ruta2 <- "iter_27_cpv2020/diccionario_datos/diccionario_datos_iter_27CSV20.csv"
+ruta3 <- "27_tabasco/conjunto_de_datos/"
 
 # read_csv() es la versión del tidyverse de read.csv
 censo <- read_csv(ruta) %>% 
@@ -29,6 +33,7 @@ censo <- read_csv(ruta) %>%
 # limpieza
 dict_censo <- read_csv(ruta2, skip = 4) %>%
   janitor::clean_names()
+
 
 # dejamos únicamente las 2 variables que nos interesan
 catalogo_variables <- dict_censo %>% 
@@ -42,7 +47,18 @@ Pruebas
 ```{r}
 
 sesentaymas <- censo %>% select(p_60ymas)
+pruebas <- censo %>% select(nom_loc, rel_h_m)
 
+manzanas <- readOGR(dsn = paste0(ruta3,"."), layer = "27m", encoding = "UTF-8")
+
+par(mar=c(0,0,0,0))
+plot(manzanas, col="#f2f2f2", bg="skyblue", lwd=0.25, border=0 )
+
+manzanas_fortified <- tidy(manzanas, region = "CVE_MUN")
+
+ggplot() +
+  geom_polygon(data = manzanas_fortified, aes( x = long, y = lat, group = group), fill="#69b3a2", color="white") +
+  theme_void() 
 
 ```
 
